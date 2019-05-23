@@ -36,15 +36,22 @@ class MessageScheduler:
 		self.schedule_next()
 		for guild in self.bot.guilds:
 			#select first channel bot can send in
-			channel = next(
+			channel = next((
 				ch for ch in guild.channels
 				if ch.permissions_for(guild.me).send_messages
 					and type(ch) is discord.TextChannel
-			)
+			), None)
+
 			#select random online user and ping
-			member = random.choice(
-				[m for m in guild.members if m.status == discord.Status.online]
-			)
+			member_choices = [m for m in guild.members 
+				if (m.status == discord.Status.online) and (not m.bot)]
+
+			#ignore if no available channels or no members
+			if (channel is None) or (not member_choices):
+				continue	
+
+			member = random.choice(member_choices)
+
 			print("Chose member '{}' in channel '{}' for guild '{}'".format(
 				member, channel, guild	
 			))
