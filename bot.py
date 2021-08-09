@@ -93,7 +93,10 @@ if __name__ == "__main__":
 	with open("token.key") as f:
 		key = f.read()
 
-	bot = commands.Bot("~")
+	intents = discord.Intents.default()
+	intents.members = True
+	intents.presences = True
+	bot = commands.Bot(str(b'\x00'), intents=intents)
 	bot.add_cog(MentionListener(bot)) 
 	bot.loop.create_task(MessageScheduler(bot).start())
 
